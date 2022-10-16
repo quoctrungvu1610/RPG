@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -30,34 +31,38 @@ namespace RPG.SceneManagement
         }
         private IEnumerator Transition()
         {
-            if(sceneToLoad < 0)
+            if (sceneToLoad < 0)
             {
-                Debug.LogError("Scene to load is not set");
+                Debug.LogError("Scene to load not set.");
                 yield break;
             }
+
             DontDestroyOnLoad(gameObject);
+
             Fader fader = FindObjectOfType<Fader>();
 
             yield return fader.FadeOut(fadeOutTime);
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
-            //Xac dinh Portal khac
+
             Potal otherPortal = GetOtherPortal();
-            //Di chuyen Player den Portal do
             UpdatePlayer(otherPortal);
 
             yield return new WaitForSeconds(fadeWaitTime);
             yield return fader.FadeIn(fadeInTime);
 
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
-          
+
+
         private void UpdatePlayer(Potal otherPortal)
         {
             GameObject player = GameObject.FindWithTag("Player");
             //Navmesh Agent di chuyen den vi tri do
-            player.GetComponent<NavMeshAgent>().Warp(otherPortal.spawnPoint.position);
+            //player.GetComponent<NavMeshAgent>().Warp(otherPortal.spawnPoint.position);
+            // player.GetComponent<NavMeshAgent>().enabled = false;
+            player.transform.position = otherPortal.spawnPoint.position;
             player.transform.rotation = otherPortal.spawnPoint.rotation;
-          
+            //player.GetComponent<NavMeshAgent>().enabled = true;
         }
 
         private Potal GetOtherPortal()
