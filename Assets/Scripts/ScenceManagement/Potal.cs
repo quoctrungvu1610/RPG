@@ -59,6 +59,7 @@ namespace RPG.SceneManagement
             Potal otherPortal = GetOtherPortal();
             UpdatePlayer(otherPortal);
 
+            //Save Again
             wrapper.Save();
             //player.GetComponent<PlayerController>().enabled = true;
           

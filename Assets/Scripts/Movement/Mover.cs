@@ -21,14 +21,8 @@ namespace RPG.Movement
         }
         void Update()
         {
-            
             navMeshAgent.enabled = !health.IsDead();
-            
-            
-            //else if (!health.IsDead())
-            //{
-            //    navMeshAgent.enabled = true;
-            //}
+           
             UpdateAnimator();
             //Debug.DrawRay(lastRay.origin, lastRay.direction * 100);
 
@@ -66,16 +60,66 @@ namespace RPG.Movement
       
         public object CaptureState()
         {
-            return new SerializableVector3(transform.position);
+            //------------Capturing multiple parameters part (Using Dictionary)----------------//
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["position"] = new SerializableVector3(transform.position);
+            data["rotation"] = new SerializableVector3(transform.eulerAngles);
+            return data;
+            //--------------------------------------------------------------//
+
+            //Not return multiple parameters part
+            //return new SerializableVector3(transform.position);
+            
         }
         //Call after Awake but before Start
         public void RestoreState(object state)
         {
-            SerializableVector3 position = (SerializableVector3)state;
+            //------------Capturing multiple parameters part (Using Dictionary)----------------//
+            Dictionary<string, object> data = (Dictionary<string, object>)state;
+            
+            //--------------------------------------------------------------//
+
+
+            //Not return multiple parameters part
+            //SerializableVector3 position = (SerializableVector3)state;
+
             //khi upate transform position thi phai disable NavMeshAgent;
             GetComponent<NavMeshAgent>().enabled = false;
-            transform.position = position.ToVector();
+
+            //------------Capturing multiple parameters part (Using Dictionary)----------------//
+            transform.position = ((SerializableVector3)data["position"]).ToVector();
+            transform.eulerAngles = ((SerializableVector3)data["rotation"]).ToVector();
+            //--------------------------------------------------------------//
+
+            //Not return multiple parameters part
+            //transform.position = position.ToVector();
             GetComponent<NavMeshAgent>().enabled = true;
         }
+
+        //------------Capturing multiple parameters part (Using truct)----------------//
+
+        //[System.Serializable]
+        //struct MoverSaveData
+        //{
+        //    public SerializableVector3 position;
+        //    public SerializableVector3 rotation;
+        //}
+        //public object CaptureState()
+        //{
+        //    MoverSaveData data = new MoverSaveData();
+        //    data.position = new SerializableVector3(transform.position);
+        //    data.rotation = new SerializableVector3(transform.eulerAngles);
+        //    return data;
+        //}
+        //public void RestoreState(object state)
+        //{
+        //    MoverSaveData data = (MoverSaveData)state;
+        //    GetComponent<NavMeshAgent>().enabled = false;
+        //    transform.position = data.position.ToVector();
+        //    transform.rotation = data.rotation.ToVector();
+        //    GetComponent<NavMeshAgent>().enabled = true;
+
+        //}
+        //--------------------------------------------------------------//
     }
 }
