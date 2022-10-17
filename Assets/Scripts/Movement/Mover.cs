@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using RPG.Saving;
 
 namespace RPG.Movement
 {
-    public class Mover : MonoBehaviour, IAction
+    public class Mover : MonoBehaviour, IAction, ISaveable
     {
         [SerializeField] Transform target;
         [SerializeField] float maxSpeed = 6f;
@@ -20,11 +21,14 @@ namespace RPG.Movement
         }
         void Update()
         {
-            if (health.IsDead())
-            {
-                navMeshAgent.enabled = !health.IsDead();
-            }
             
+            navMeshAgent.enabled = !health.IsDead();
+            
+            
+            //else if (!health.IsDead())
+            //{
+            //    navMeshAgent.enabled = true;
+            //}
             UpdateAnimator();
             //Debug.DrawRay(lastRay.origin, lastRay.direction * 100);
 
@@ -37,7 +41,7 @@ namespace RPG.Movement
 
         public void MoveTo(Vector3 destination, float speedFraction)
         {
-            GetComponent<NavMeshAgent>().destination = destination;
+            navMeshAgent.destination = destination;
             navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
             navMeshAgent.isStopped = false;
         }
@@ -57,6 +61,21 @@ namespace RPG.Movement
         {
             navMeshAgent.isStopped = true;
         }
-        
+
+        //Save 
+      
+        public object CaptureState()
+        {
+            return new SerializableVector3(transform.position);
+        }
+        //Call after Awake but before Start
+        public void RestoreState(object state)
+        {
+            SerializableVector3 position = (SerializableVector3)state;
+            //khi upate transform position thi phai disable NavMeshAgent;
+            GetComponent<NavMeshAgent>().enabled = false;
+            transform.position = position.ToVector();
+            GetComponent<NavMeshAgent>().enabled = true;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPG.Control;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.UIElements.GraphView;
@@ -19,7 +20,7 @@ namespace RPG.SceneManagement
         [SerializeField] DestinationIdentifier destination;
         [SerializeField] float fadeOutTime = 1f;
         [SerializeField] float fadeInTime = 2f;
-        [SerializeField] float fadeWaitTime = 0.5f;
+        [SerializeField] float fadeWaitTime = 0f;
 
 
         private void OnTriggerEnter(Collider other)
@@ -41,28 +42,48 @@ namespace RPG.SceneManagement
 
             Fader fader = FindObjectOfType<Fader>();
 
+            
             yield return fader.FadeOut(fadeOutTime);
+
+            //Save Current Level
+            SavingWrapper wrapper = FindObjectOfType<SavingWrapper>();
+            wrapper.Save();
+
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
+            //GameObject player = GameObject.FindWithTag("Player");
+            //player.GetComponent<PlayerController>().enabled = false;
+
+            //Load Current Level
+            wrapper.Load();
 
             Potal otherPortal = GetOtherPortal();
             UpdatePlayer(otherPortal);
 
+            wrapper.Save();
+            //player.GetComponent<PlayerController>().enabled = true;
+          
+
             yield return new WaitForSeconds(fadeWaitTime);
             yield return fader.FadeIn(fadeInTime);
 
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
 
 
         private void UpdatePlayer(Potal otherPortal)
         {
             GameObject player = GameObject.FindWithTag("Player");
+            //Phan Saving
+            player.GetComponent<NavMeshAgent>().enabled = false;
+
+
+            //-------------Saving---------------//
             //Navmesh Agent di chuyen den vi tri do
-            //player.GetComponent<NavMeshAgent>().Warp(otherPortal.spawnPoint.position);
-            // player.GetComponent<NavMeshAgent>().enabled = false;
-            player.transform.position = otherPortal.spawnPoint.position;
+            player.GetComponent<NavMeshAgent>().Warp(otherPortal.spawnPoint.position);
+            //player.GetComponent<NavMeshAgent>().enabled = false;
+            //player.transform.position = otherPortal.spawnPoint.position;
             player.transform.rotation = otherPortal.spawnPoint.rotation;
-            //player.GetComponent<NavMeshAgent>().enabled = true;
+            player.GetComponent<NavMeshAgent>().enabled = true;
         }
 
         private Potal GetOtherPortal()
@@ -71,6 +92,7 @@ namespace RPG.SceneManagement
             {
                 //neu la portal nay thi skip
                 if (portal == this) continue;
+                // neu la portal cung ten thi cung skip
                 if (portal.destination != destination) continue;
 
                 return portal;
