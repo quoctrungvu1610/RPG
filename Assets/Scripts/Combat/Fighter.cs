@@ -1,5 +1,6 @@
 ﻿using RPG.Core;
 using RPG.Movement;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,13 +9,23 @@ namespace RPG.Combat
 {
     public class Fighter : MonoBehaviour,IAction
     {
-        [SerializeField] float weaponRange = 2f;
+        //[SerializeField] float weaponRange = 2f;
         [SerializeField] float timeBetweenAttacks = 1f;
-        [SerializeField] float weaponDamage = 5f;
+        //[SerializeField] float weaponDamage = 5f;
+        [SerializeField] Transform handTransform = null;
+        [SerializeField] Weapon defaultWeapon = null;
 
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
+
+        //112
+        Weapon currentWeapon = null;
       
+        private void Start()
+        {
+            EquipWeapon(defaultWeapon);
+        }
+
         void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
@@ -38,7 +49,7 @@ namespace RPG.Combat
         // Ham GetInRange() tra ve true khi player o trong tam ngam cua enemy
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < currentWeapon.GetWeaponRange();
         }
 
         private void AttackBehaviour()
@@ -64,7 +75,7 @@ namespace RPG.Combat
         public void Hit()
         {
             if (target == null) { return; }  
-            target.TakeDamage(weaponDamage);
+            target.TakeDamage(currentWeapon.GetWeaponDamage());
         }
 
         public void Cancel()
@@ -100,6 +111,15 @@ namespace RPG.Combat
         {
             GetComponent<ActionScheduler>().StartAction(this);
             target = combatTarget.GetComponent<Health>();
+        }
+
+        //Weapons Part
+        public void EquipWeapon(Weapon weapon)
+        {
+            //if(weapon == null) return;
+            currentWeapon = weapon;
+            Animator animator = GetComponent<Animator>();
+            weapon.Spawn(handTransform, animator);
         }
 
     }
