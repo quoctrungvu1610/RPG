@@ -1,5 +1,6 @@
 ﻿using RPG.Core;
 using RPG.Movement;
+using RPG.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class Fighter : MonoBehaviour,IAction
+    public class Fighter : MonoBehaviour,IAction,ISaveable
     {
         //[SerializeField] float weaponRange = 2f;
         [SerializeField] float timeBetweenAttacks = 1f;
@@ -15,6 +16,8 @@ namespace RPG.Combat
         [SerializeField] Transform rightHandTransform = null;
         [SerializeField] Transform leftHandTransform = null;
         [SerializeField] Weapon defaultWeapon = null;
+        //125 Dynamic Resource Loading
+        //[SerializeField] string defaultWeaponName = "Unarmed";
 
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
@@ -24,7 +27,13 @@ namespace RPG.Combat
       
         private void Start()
         {
-            EquipWeapon(defaultWeapon);
+            //Look for resource in resources folder that has a type of weapon
+            //Weapon weapon = Resources.Load<Weapon>(defaultWeaponName);
+
+            if(currentWeapon == null)
+            {
+                EquipWeapon(defaultWeapon);
+            }
         }
 
         void Update()
@@ -135,6 +144,19 @@ namespace RPG.Combat
             weapon.Spawn(rightHandTransform, leftHandTransform, animator);
         }
 
+
+        //126 Saving Weapon choice
+        public object CaptureState()
+        {
+            return currentWeapon.name;
+        }
+
+        public void RestoreState(object state)
+        {
+            string weaponName = (string)state;
+            Weapon weapon = Resources.Load<Weapon>(weaponName);
+            EquipWeapon(weapon);
+        }
     }
     
 }
