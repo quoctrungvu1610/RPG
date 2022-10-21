@@ -1317,6 +1317,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050bcb814ea538d44a5ea0c7c0edcd3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6338530866717543842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692800399611658575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb97201d03e2494a8db7e753abe1547, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  experiencePoints: 0
 --- !u!1 &4486860231750468643
 GameObject:
   m_ObjectHideFlags: 0
@@ -2316,6 +2329,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2933583289999001499, guid: 2d78ec1912e359c4581186d4f04827ea,
+        type: 3}
+      propertyPath: characterClass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2933583289999001499, guid: 2d78ec1912e359c4581186d4f04827ea,
+        type: 3}
+      propertyPath: startingLevel
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8407479799955498141, guid: 2d78ec1912e359c4581186d4f04827ea,
         type: 3}

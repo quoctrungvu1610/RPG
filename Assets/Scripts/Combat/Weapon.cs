@@ -1,6 +1,7 @@
 ﻿
 using RPG.Core;
 using UnityEngine;
+using RPG.Attributes;
 
 namespace RPG.Combat
 {
@@ -70,10 +71,10 @@ namespace RPG.Combat
         }
 
         // Shoot Projectile Part
-        public void LanuchProjectile(Transform rightHand, Transform lefthand, Health target)
+        public void LaunchProjectile(Transform rightHand, Transform lefthand, Health target, GameObject instigator)
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, lefthand).position, Quaternion.identity);
-            projectileInstance.SetTarget(target, weaponDamage);
+            projectileInstance.SetTarget(target, instigator,weaponDamage);
         }
         
         public bool HasProjectile()

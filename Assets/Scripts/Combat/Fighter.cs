@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG.Attributes;
 
 namespace RPG.Combat
 {
@@ -87,11 +88,11 @@ namespace RPG.Combat
             if (target == null) { return; }
             if (currentWeapon.HasProjectile())
             {
-                currentWeapon.LanuchProjectile(rightHandTransform, leftHandTransform, target);
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target,gameObject);
             }
             else
             {
-                target.TakeDamage(currentWeapon.GetWeaponDamage());
+                target.TakeDamage(gameObject,currentWeapon.GetWeaponDamage());
             }
         }
 
@@ -144,6 +145,12 @@ namespace RPG.Combat
             weapon.Spawn(rightHandTransform, leftHandTransform, animator);
         }
 
+        //132
+
+        public Health GetTarget()
+        {
+            return target;
+        }
 
         //126 Saving Weapon choice
         public object CaptureState()

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RPG.Attributes;
 
 namespace RPG.Combat
 {
@@ -16,6 +17,11 @@ namespace RPG.Combat
         [SerializeField] GameObject[] destroyOnHit = null;
         [SerializeField] float lifeAfterImpact = 2;
         Health target = null;
+        //133
+        GameObject instigator = null;
+
+
+
         //116
         float damage = 0;
         private void Start()
@@ -32,10 +38,11 @@ namespace RPG.Combat
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
         }
-        public void SetTarget(Health target, float damage)
+        public void SetTarget(Health target, GameObject instigator, float damage)
         {
             this.target = target;
             this.damage = damage;
+            this.instigator = instigator;
 
             Destroy(gameObject, maxLifetime);
         }
@@ -54,7 +61,7 @@ namespace RPG.Combat
             if (other.GetComponent<Health>() != target) return;
             if (target.IsDead()) return;
 
-            target.TakeDamage(damage);
+            target.TakeDamage(instigator,damage);
             //stop the trail effect
             speed = 0;
 
