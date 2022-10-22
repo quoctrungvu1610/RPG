@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,15 +11,46 @@ namespace RPG.Stats
         [SerializeField] int startingLevel = 1;
         [SerializeField] CharacterClass characterClass;
         [SerializeField] Progression progression = null;
-        
-        private void Update()
+        [SerializeField] GameObject levelUpParticleEffect = null;
+        //145 event
+        //1: Tao 1 event
+        //2: Tim cho thich hop de Add Event
+        //3: Tim ham de Subsribe (+=) vao event
+        public event Action onLevelUp;
+
+        //142 Events And Delegates
+        int currentLevel = 0;
+
+        private void Start()
         {
-            if(gameObject.tag == "Player")
+            //142
+            currentLevel = CalculateLevel();
+            Experience experience = GetComponent<Experience>();
+            if(experience != null)
             {
-                print(GetLevel());
+                experience.onExperienceGained += UpdateLevel;
             }
-            
         }
+        private void UpdateLevel()
+        {
+            //if(gameObject.tag == "Player")
+            //{
+            //    print(GetLevel());
+            //}
+            int newLevel = CalculateLevel();
+            if(newLevel > currentLevel)
+            {
+                currentLevel = newLevel;
+                LevelUpEffect();
+                onLevelUp();
+            }
+        }
+
+        private void LevelUpEffect()
+        {
+            Instantiate(levelUpParticleEffect,transform);
+        }
+
         //Call this in Health
         public float GetStat(Stat stat)
         {
@@ -35,7 +67,19 @@ namespace RPG.Stats
         //{
 
         //}
+
+        //142 tach GetLevel ra de ko tinh toan nhung ham ben duoi Calculate Level moi frame
         public int GetLevel()
+        {
+            if(currentLevel < 1)
+            {
+                currentLevel = CalculateLevel();
+            }
+            return currentLevel;
+        }
+        //Sua Get Level thanh Calculate Level
+        //142
+        public int CalculateLevel()
         {
             Experience experience = GetComponent<Experience>();
             if (experience == null) return startingLevel;
