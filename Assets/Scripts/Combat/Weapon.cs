@@ -71,10 +71,13 @@ namespace RPG.Combat
         }
 
         // Shoot Projectile Part
-        public void LaunchProjectile(Transform rightHand, Transform lefthand, Health target, GameObject instigator)
+        //146 old  public void LaunchProjectile (Transform rightHand, Transform lefthand, Health target, GameObject instigator)
+        public void LaunchProjectile(Transform rightHand, Transform lefthand, Health target, GameObject instigator, float calculateDamage)
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, lefthand).position, Quaternion.identity);
-            projectileInstance.SetTarget(target, instigator,weaponDamage);
+            //old
+            //projectileInstance.SetTarget(target, instigator, weaponDamage);
+            projectileInstance.SetTarget(target, instigator, calculateDamage);
         }
         
         public bool HasProjectile()

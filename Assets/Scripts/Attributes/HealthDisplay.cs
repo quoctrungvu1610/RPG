@@ -13,14 +13,9 @@ namespace RPG.Attributes
         {
             health = GameObject.FindWithTag("Player").GetComponent<Health>();
         }
-        
-        void Start()
-        {
-
-        }
         void Update()
         {
-            GetComponent<Text>().text = String.Format("{0:0.0}%", health.GetPercentage());
+            GetComponent<Text>().text = String.Format("{0:0}/{1:0}", health.GetHealthPoints(), health.GetMaxHealthPoints());
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.Attributes;
+using RPG.Stats;
 
 namespace RPG.Combat
 {
@@ -86,13 +87,17 @@ namespace RPG.Combat
         public void Hit()
         {
             if (target == null) { return; }
+            float damage = GetComponent<BaseStats>().GetStat(Stat.Damage);
             if (currentWeapon.HasProjectile())
             {
-                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target,gameObject);
+                currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target,gameObject,damage);
             }
             else
             {
-                target.TakeDamage(gameObject,currentWeapon.GetWeaponDamage());
+                //target.TakeDamage(gameObject,currentWeapon.GetWeaponDamage());
+                //146 Damage Progression
+                
+                target.TakeDamage(gameObject, damage);
             }
         }
 
