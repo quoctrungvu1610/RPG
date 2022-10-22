@@ -54,7 +54,25 @@ namespace RPG.Stats
         //Call this in Health
         public float GetStat(Stat stat)
         {
-            return progression.GetStat(stat,characterClass,GetLevel());
+            //Old
+            //return progression.GetStat(stat,characterClass,GetLevel());
+            //147 New
+            return progression.GetStat(stat, characterClass, GetLevel()) + GetAdditiveModifier(stat);
+        }
+
+
+        //147
+        private float GetAdditiveModifier(Stat stat)
+        {
+            float total = 0;
+            foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
+            {
+                foreach(float modifier in provider.GetAdditiveModifier(stat))
+                {
+                    total += modifier;
+                }
+            }
+            return total;
         }
 
 
@@ -79,7 +97,7 @@ namespace RPG.Stats
         }
         //Sua Get Level thanh Calculate Level
         //142
-        public int CalculateLevel()
+        private int CalculateLevel()
         {
             Experience experience = GetComponent<Experience>();
             if (experience == null) return startingLevel;
