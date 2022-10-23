@@ -15,10 +15,15 @@ namespace RPG.Movement
 
         NavMeshAgent navMeshAgent;
         Health health;
-        private void Start()
+
+        private void Awake()
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
             health = GetComponent<Health>();
+        }
+        private void Start()
+        {
+            
         }
         void Update()
         {
@@ -85,7 +90,7 @@ namespace RPG.Movement
             //SerializableVector3 position = (SerializableVector3)state;
 
             //khi upate transform position thi phai disable NavMeshAgent;
-            GetComponent<NavMeshAgent>().enabled = false;
+            navMeshAgent.enabled = false;
 
             //------------Capturing multiple parameters part (Using Dictionary)----------------//
             transform.position = ((SerializableVector3)data["position"]).ToVector();
@@ -94,7 +99,7 @@ namespace RPG.Movement
 
             //Not return multiple parameters part
             //transform.position = position.ToVector();
-            GetComponent<NavMeshAgent>().enabled = true;
+            navMeshAgent.enabled = true;
         }
 
         //------------Capturing multiple parameters part (Using truct)----------------//

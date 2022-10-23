@@ -12,6 +12,7 @@ namespace RPG.Stats
         [SerializeField] CharacterClass characterClass;
         [SerializeField] Progression progression = null;
         [SerializeField] GameObject levelUpParticleEffect = null;
+        [SerializeField] bool shouldUseModifiers = false;
         //145 event
         //1: Tao 1 event
         //2: Tim cho thich hop de Add Event
@@ -20,15 +21,35 @@ namespace RPG.Stats
 
         //142 Events And Delegates
         int currentLevel = 0;
+        Experience experience;
+        private void Awake()
+        {
+            experience = GetComponent<Experience>();
+        }
 
         private void Start()
         {
             //142
             currentLevel = CalculateLevel();
-            Experience experience = GetComponent<Experience>();
-            if(experience != null)
+            
+            //if(experience != null)
+            //{
+            //    experience.onExperienceGained += UpdateLevel;
+            //}
+        }
+        private void OnEnable()
+        {
+            if (experience != null)
             {
                 experience.onExperienceGained += UpdateLevel;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (experience != null)
+            {
+                experience.onExperienceGained -= UpdateLevel;
             }
         }
         private void UpdateLevel()
@@ -57,17 +78,41 @@ namespace RPG.Stats
             //Old
             //return progression.GetStat(stat,characterClass,GetLevel());
             //147 New
-            return progression.GetStat(stat, characterClass, GetLevel()) + GetAdditiveModifier(stat);
+            return (GetBaseStat(stat) + GetAdditiveModifier(stat)) * (1 + GetPercentageModifier(stat)/100);
+        }
+
+       
+
+        private float GetBaseStat(Stat stat)
+        {
+            return progression.GetStat(stat, characterClass, GetLevel());
         }
 
 
         //147
         private float GetAdditiveModifier(Stat stat)
         {
+            if (!shouldUseModifiers) return 0;
+          
             float total = 0;
             foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
             {
-                foreach(float modifier in provider.GetAdditiveModifier(stat))
+                foreach(float modifier in provider.GetAdditiveModifiers(stat))
+                {
+                    total += modifier;
+                }
+            }
+            return total;
+        }
+
+        //148 
+        private float GetPercentageModifier(Stat stat)
+        {
+            if (!shouldUseModifiers) return 0;
+            float total = 0;
+            foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
+            {
+                foreach (float modifier in provider.GetPercentageModifiesr(stat))
                 {
                     total += modifier;
                 }

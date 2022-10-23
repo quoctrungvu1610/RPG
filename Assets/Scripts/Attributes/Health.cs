@@ -24,7 +24,7 @@ namespace RPG.Attributes
 
             //141 fixed Health Bug
 
-            if(healthPoints < 0)
+            if (healthPoints < 0)
             {
                 //135 fixed
                 healthPoints = GetComponent<BaseStats>().GetStat(Stat.Health);
@@ -34,7 +34,15 @@ namespace RPG.Attributes
 
         }
 
-      
+        private void OnEnable()
+        {
+            GetComponent<BaseStats>().onLevelUp += RegenerateHealth;
+        }
+        private void OnDisable()
+        {
+            GetComponent<BaseStats>().onLevelUp -= RegenerateHealth;
+        }
+
 
         public bool IsDead()
         {
