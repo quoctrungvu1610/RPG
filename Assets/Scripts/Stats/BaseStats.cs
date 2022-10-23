@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameDevTV.Utils;
 
 namespace RPG.Stats
 {
@@ -20,18 +21,24 @@ namespace RPG.Stats
         public event Action onLevelUp;
 
         //142 Events And Delegates
-        int currentLevel = 0;
+        //int currentLevel = 0;
+
+        LazyValue<int> currentLevel;
+
         Experience experience;
         private void Awake()
         {
             experience = GetComponent<Experience>();
+            currentLevel = new LazyValue<int>(CalculateLevel);
         }
 
         private void Start()
         {
             //142
-            currentLevel = CalculateLevel();
-            
+            //currentLevel = CalculateLevel();
+
+            currentLevel.ForceInit();
+
             //if(experience != null)
             //{
             //    experience.onExperienceGained += UpdateLevel;
@@ -59,9 +66,9 @@ namespace RPG.Stats
             //    print(GetLevel());
             //}
             int newLevel = CalculateLevel();
-            if(newLevel > currentLevel)
+            if(newLevel > currentLevel.value)
             {
-                currentLevel = newLevel;
+                currentLevel.value = newLevel;
                 LevelUpEffect();
                 onLevelUp();
             }
@@ -134,11 +141,11 @@ namespace RPG.Stats
         //142 tach GetLevel ra de ko tinh toan nhung ham ben duoi Calculate Level moi frame
         public int GetLevel()
         {
-            if(currentLevel < 1)
-            {
-                currentLevel = CalculateLevel();
-            }
-            return currentLevel;
+            //if(currentLevel < 1)
+            //{
+            //    currentLevel = CalculateLevel();
+            //}
+            return currentLevel.value;
         }
         //Sua Get Level thanh Calculate Level
         //142

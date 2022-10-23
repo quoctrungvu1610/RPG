@@ -21,10 +21,6 @@ namespace RPG.Movement
             navMeshAgent = GetComponent<NavMeshAgent>();
             health = GetComponent<Health>();
         }
-        private void Start()
-        {
-            
-        }
         void Update()
         {
             navMeshAgent.enabled = !health.IsDead();
