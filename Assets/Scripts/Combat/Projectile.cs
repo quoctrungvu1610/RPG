@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPG.Attributes;
+using UnityEngine.Events;
 
 namespace RPG.Combat
 {
@@ -16,6 +17,7 @@ namespace RPG.Combat
         //Destroy different Effect
         [SerializeField] GameObject[] destroyOnHit = null;
         [SerializeField] float lifeAfterImpact = 2;
+        [SerializeField] UnityEvent onHit;
         Health target = null;
         //133
         GameObject instigator = null;
@@ -64,6 +66,8 @@ namespace RPG.Combat
             target.TakeDamage(instigator,damage);
             //stop the trail effect
             speed = 0;
+
+            onHit.Invoke();
 
             if (hitEffect != null)
             {
